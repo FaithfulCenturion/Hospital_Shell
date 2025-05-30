@@ -42,6 +42,12 @@ if (!$result) {
 
 <body>
     <h1>Usuarios actuales</h1>
+    <div style="text-align: center; margin-bottom: 20px;">
+        <a href="/hospital-shell/login/register.php">
+            <button style="padding: 10px 20px; font-size: 16px;">Crear nuevo usuario</button>
+        </a>
+    </div>
+
     <table>
         <thead>
             <tr>
@@ -88,6 +94,9 @@ if (!$result) {
         </tbody>
     </table>
 </body>
+
+<br><br>
+
 <footer>
     <p style="display: flex; justify-content: space-between; align-items: center; margin: 0;">
         <a href="../general/password_reset.php">Restablecer mi contraseña</a>

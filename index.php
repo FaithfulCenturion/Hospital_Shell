@@ -38,7 +38,5 @@ if (isset($_SESSION['usuario_id']) && isset($_SESSION['tipo_usuario'])) {
 
         <button type="submit">Entrar</button>
     </form>
-
-    <p>¿No tienes cuenta? <a href="login/register.php">Regístrate aquí</a></p>
 </body>
 </html>

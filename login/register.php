@@ -1,4 +1,10 @@
 <!-- register.php -->
+ <?php
+ require_once '../includes/auth.php';
+ 
+verificarTipoUsuario('administrador');  // Only allow admin
+?>
+
 <!DOCTYPE html>
 <html lang="es">
 
@@ -29,8 +35,6 @@
 
         <button type="submit">Registrar</button>
     </form>
-
-    <p>¿Ya tienes cuenta? <a href="../index.php">Iniciar sesión</a></p>
 </body>
 
 </html>

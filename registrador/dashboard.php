@@ -1,17 +1,24 @@
 <?php
 require_once '../includes/auth.php';
+require_once '../includes/db.php';
+
 verificarTipoUsuario('registrador');
 
-// Check for form submission
-if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    $nombre = $_POST['nombre'] ?? '';
-    $apellido = $_POST['apellido'] ?? '';
-    $fechaNacimiento = $_POST['fecha_nacimiento'] ?? '';
-    $cedula = $_POST['cedula'] ?? '';
+// Get today's waiting patients
+$sql = "
+    SELECT v.id AS visita_id, p.nombre, p.apellido, p.fecha_nacimiento, v.fecha_llegada
+    FROM visitas v
+    JOIN pacientes p ON v.paciente_id = p.id
+    WHERE v.estado = 'esperando'
+    ORDER BY v.fecha_llegada ASC
+";
+$result = $conn->query($sql);
 
-    // TODO: Connect to DB and insert patient record here.
-    // For now just simulate success:
-    $mensaje = "Paciente registrado: $nombre $apellido, Cédula: $cedula";
+function tiempoEspera($fecha_llegada)
+{
+    $espera = time() - strtotime($fecha_llegada);
+    $min = floor($espera / 60);
+    return $min . ' min';
 }
 ?>
 
@@ -21,32 +28,111 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 <head>
     <meta charset="UTF-8">
     <title>Dashboard Registrador</title>
+    <style>
+        table {
+            border-collapse: collapse;
+            margin: 20px 0;
+            width: 100%;
+        }
+
+        th,
+        td {
+            border: 1px solid #999;
+            padding: 8px;
+            text-align: left;
+        }
+
+        th {
+            background: #444;
+            color: white;
+        }
+
+        .top-bar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .btn {
+            padding: 8px 16px;
+            background: #28a745;
+            color: white;
+            text-decoration: none;
+            border-radius: 4px;
+        }
+
+        .btn:hover {
+            background: #218838;
+        }
+    </style>
 </head>
 
 <body>
 
-    <h2>Dashboard de Registrador</h2>
+    <div class="top-bar">
+        <h2>Pacientes en espera</h2>
+        <div>
+            <a class="btn" href="registrar_paciente.php">Registrar nuevo paciente</a>
+            <a class="btn" href="buscar_paciente.php" style="background: #007bff; margin-left: 10px;">Buscar paciente
+                existente</a>
+        </div>
+    </div>
 
-    <?php if (!empty($mensaje)): ?>
-        <p style="color: green;"><?= htmlspecialchars($mensaje) ?></p>
+    <?php if (isset($_GET['msg'])): ?>
+        <p style="color: green; font-weight: bold;">
+            <?php
+            // Map known messages to user-friendly text
+            $messages = [
+                'visita_cancelada' => '✅ Visita cancelada correctamente.',
+                'otro_evento' => 'Otro mensaje aquí...',
+            ];
+
+            echo $messages[$_GET['msg']] ?? 'Mensaje desconocido.';
+            ?>
+        </p>
     <?php endif; ?>
 
-    <h3>Registrar nuevo paciente</h3>
-    <form method="post" autocomplete="off">
-        <label for="nombre">Nombre:</label><br>
-        <input type="text" id="nombre" name="nombre" required><br>
 
-        <label for="apellido">Apellido:</label><br>
-        <input type="text" id="apellido" name="apellido" required><br>
+    <?php if ($result->num_rows > 0): ?>
+        <table>
+            <thead>
+                <tr>
+                    <th>Nombre</th>
+                    <th>Fecha de nacimiento</th>
+                    <th>Hora de llegada</th>
+                    <th>Tiempo en espera</th>
+                    <th>Cancelar visita</th>
+                </tr>
+            </thead>
+            <tbody>
+                <?php while ($fila = $result->fetch_assoc()): ?>
+                    <tr>
+                        <td><?= htmlspecialchars($fila['nombre']) . ' ' . htmlspecialchars($fila['apellido']) ?></td>
+                        <td><?= htmlspecialchars($fila['fecha_nacimiento']) ?></td>
+                        <td><?= date('H:i', strtotime($fila['fecha_llegada'])) ?></td>
+                        <td>
+                            <span class="tiempo-espera"
+                                data-fecha-llegada="<?= htmlspecialchars($fila['fecha_llegada']) ?>"></span>
+                        </td>
+                        <td>
+                            <form method="POST" action="../general/cancelar_visita.php"
+                                onsubmit="return confirm('¿Está seguro que desea cancelar esta visita?');">
+                                <input type="hidden" name="visita_id" value="<?= (int) $fila['visita_id'] ?>">
+                                <button type="submit"
+                                    style="background:#dc3545; color:white; border:none; padding:5px 10px; cursor:pointer;">
+                                    Cancelar
+                                </button>
+                            </form>
+                        </td>
+                    </tr>
+                <?php endwhile; ?>
+            </tbody>
+        </table>
+    <?php else: ?>
+        <p>No hay pacientes en espera.</p>
+    <?php endif; ?>
 
-        <label for="fecha_nacimiento">Fecha de nacimiento:</label><br>
-        <input type="date" id="fecha_nacimiento" name="fecha_nacimiento" required><br>
-
-        <label for="queja">Queja principal:</label><br>
-        <textarea id="queja" name="queja" rows="3" cols="30" required></textarea><br><br>
-
-        <button type="submit">Registrar paciente</button>
-    </form>
+    <br><br>
 
     <footer>
         <p style="display: flex; justify-content: space-between; align-items: center; margin: 0;">
@@ -55,6 +141,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         </p>
     </footer>
 
+    <script src="../js/actualizarTiempoEspera.js"></script>
 </body>
 
 </html>

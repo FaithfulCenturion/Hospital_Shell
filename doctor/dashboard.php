@@ -27,16 +27,19 @@ try {
     </thead>
     <tbody>
         <?php foreach ($pacientes as $p): ?>
-        <tr>
-            <td><?= htmlspecialchars($p['nombre']) ?></td>
-            <td><?= htmlspecialchars($p['apellido']) ?></td>
-            <td><?= htmlspecialchars($p['fecha_nacimiento']) ?></td>
-            <td><?= htmlspecialchars($p['queja']) ?></td>
-            <td><?= htmlspecialchars($p['fecha_registro']) ?></td>
-        </tr>
+            <tr>
+                <td><?= htmlspecialchars($p['nombre']) ?></td>
+                <td><?= htmlspecialchars($p['apellido']) ?></td>
+                <td><?= htmlspecialchars($p['fecha_nacimiento']) ?></td>
+                <td><?= htmlspecialchars($p['queja']) ?></td>
+                <td><?= htmlspecialchars($p['fecha_registro']) ?></td>
+            </tr>
         <?php endforeach; ?>
     </tbody>
 </table>
+
+
+<br><br>
 
 <footer>
     <p style="display: flex; justify-content: space-between; align-items: center; margin: 0;">
