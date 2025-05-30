@@ -14,6 +14,7 @@ verificarTipoUsuario('administrador');  // Only allow admin
 </head>
 
 <body>
+<a href="javascript:history.back()" style="position: absolute; top: 10px; left: 10px; text-decoration: none; font-weight: bold;">← Volver</a>
     <h1>Registro de Usuario</h1>
     <form action="register_process.php" method="post">
         <label for="nombre_usuario">Usuario:</label><br />

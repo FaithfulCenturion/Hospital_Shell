@@ -47,7 +47,7 @@ $pacientes = $result->fetch_all(MYSQLI_ASSOC);
                     <td><?= htmlspecialchars($p['nombre']) ?></td>
                     <td><?= htmlspecialchars($p['apellido']) ?></td>
                     <td><?= htmlspecialchars($p['fecha_nacimiento']) ?></td>
-                    <td><?= htmlspecialchars($p['queja']) ?></td>
+                    <td><?= htmlspecialchars($p['queja_principal']) ?></td>
                     <td><?= htmlspecialchars($p['fecha_llegada']) ?></td>
                     <td>
                         <form method="post" action="atender_paciente.php" style="margin: 0;">
