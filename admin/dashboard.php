@@ -43,7 +43,7 @@ if (!$result) {
 <body>
     <h1>Usuarios actuales</h1>
     <div style="text-align: center; margin-bottom: 20px;">
-        <a href="/hospital-shell/login/register.php">
+        <a href="../login/register.php">
             <button style="padding: 10px 20px; font-size: 16px;">Crear nuevo usuario</button>
         </a>
     </div>

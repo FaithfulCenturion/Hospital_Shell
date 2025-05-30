@@ -5,7 +5,7 @@ verificarTipoUsuario('doctor');
 
 // Conexión a la base de datos
 $sql = "
-    SELECT v.id AS visita_id, p.nombre, p.apellido, p.fecha_nacimiento, v.queja, v.fecha_llegada
+    SELECT v.id AS visita_id, p.nombre, p.apellido, p.fecha_nacimiento, v.queja_principal, v.fecha_llegada
     FROM visitas v
     JOIN pacientes p ON v.paciente_id = p.id
     WHERE v.estado = 'esperando'
