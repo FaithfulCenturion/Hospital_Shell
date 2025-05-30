@@ -74,7 +74,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $stmt2->bind_param("iss", $paciente_id, $queja, $estado);
         if ($stmt2->execute()) {
             //$mensaje = "✅ Paciente registrado correctamente: $nombre $apellido";
-            header("Location: dashboard.php"); // or the correct path to your dashboard
+            header("Location: dashboard.php"); // Redirigir al dashboard después de registrar
             exit;
         } else {
             $mensaje = "⚠️ Error al registrar la visita: " . $conn->error;
@@ -96,6 +96,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 </head>
 
 <body>
+<a href="javascript:history.back()" style="position: absolute; top: 10px; left: 10px; text-decoration: none; font-weight: bold;">← Volver</a>
+
 
     <h2>
         Registrar <?= $campos_desactivado ? 'paciente' : 'nuevo paciente' ?>

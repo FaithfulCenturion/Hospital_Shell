@@ -1,21 +1,34 @@
 <?php
 require_once '../includes/auth.php';
-verificarTipoUsuario('doctor'); // Adjust this to your role structure
+require_once '../includes/db.php';
+verificarTipoUsuario('doctor');
 
-require_once '../includes/db.php'; // your PDO connection
+// Conexión a la base de datos
+$sql = "
+    SELECT v.id AS visita_id, p.nombre, p.apellido, p.fecha_nacimiento, v.fecha_llegada
+    FROM visitas v
+    JOIN pacientes p ON v.paciente_id = p.id
+    WHERE v.estado = 'esperando'
+    ORDER BY v.fecha_llegada ASC
+";
+$result = $conn->query($sql);
 
-try {
-    $stmt = $pdo->query("SELECT nombre, apellido, fecha_nacimiento, queja, fecha_registro 
-                         FROM pacientes 
-                         ORDER BY fecha_registro DESC");
-    $pacientes = $stmt->fetchAll(PDO::FETCH_ASSOC);
-} catch (PDOException $e) {
-    die("Error al obtener pacientes: " . $e->getMessage());
+if (!$result) {
+    die("Error al obtener pacientes: " . $conn->error);
 }
+
+$pacientes = $result->fetch_all(MYSQLI_ASSOC);
 ?>
 
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Panel del Doctor</title>
+</head>
+<body>
 <h2>Pacientes Registrados</h2>
-<table border="1" cellpadding="8">
+<table border="1" cellpadding="8" style="border-collapse: collapse; width: 100%;">
     <thead>
         <tr>
             <th>Nombre</th>
@@ -47,3 +60,5 @@ try {
         <a href="../login/logout.php">Cerrar sesión</a>
     </p>
 </footer>
+</body>
+</html>

@@ -60,6 +60,8 @@ if ($busqueda) {
     </style>
 </head>
 <body>
+<a href="javascript:history.back()" style="position: absolute; top: 10px; left: 10px; text-decoration: none; font-weight: bold;">← Volver</a>
+
 
 <h2>Buscar Paciente</h2>
 

@@ -45,6 +45,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['reset_password'], $_P
     <title>Contraseña restablecida</title>
 </head>
 <body>
+<a href="javascript:history.back()" style="position: absolute; top: 10px; left: 10px; text-decoration: none; font-weight: bold;">← Volver</a>
+
     <h1>Contraseña restablecida para usuario: <?= htmlspecialchars($nombre_usuario) ?></h1>
     <p>La nueva contraseña es: <strong><?= htmlspecialchars($newPassword) ?></strong></p>
     <p style="color: red;">Importante: Copia tu nueva contraseña ahora. No la volverás a ver.</p>

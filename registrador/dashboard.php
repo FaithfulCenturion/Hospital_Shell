@@ -4,7 +4,7 @@ require_once '../includes/db.php';
 
 verificarTipoUsuario('registrador');
 
-// Get today's waiting patients
+// Consigue los pacientes que esperan hoy
 $sql = "
     SELECT v.id AS visita_id, p.nombre, p.apellido, p.fecha_nacimiento, v.fecha_llegada
     FROM visitas v
@@ -27,7 +27,7 @@ function tiempoEspera($fecha_llegada)
 
 <head>
     <meta charset="UTF-8">
-    <title>Dashboard Registrador</title>
+    <title>Registrador del panel de control</title>
     <style>
         table {
             border-collapse: collapse;

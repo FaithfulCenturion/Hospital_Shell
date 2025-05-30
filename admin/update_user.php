@@ -58,6 +58,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 </head>
 
 <body>
+<a href="javascript:history.back()" style="position: absolute; top: 10px; left: 10px; text-decoration: none; font-weight: bold;">← Volver</a>
+
     <h2>Actualizar Usuario: <?= htmlspecialchars($usuario['nombre_usuario']) ?></h2>
     <form method="post">
         <label>Email:</label><br>
