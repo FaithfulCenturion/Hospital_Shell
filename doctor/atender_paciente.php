@@ -14,7 +14,7 @@ $update = $conn->prepare("
     UPDATE visitas 
     SET estado = 'atendido', 
         atendido_por = ?, 
-        fecha_atendido = NOW() 
+        fecha_entrada = NOW() 
     WHERE id = ?
 ");
 $update->bind_param('ii', $doctor_id, $visita_id);
@@ -23,7 +23,7 @@ $update->close();
 
 // Obtener información del paciente
 $sql = "
-    SELECT p.nombre, p.apellido, p.fecha_nacimiento, p.cedula, v.fecha_llegada, v.queja
+    SELECT p.nombre, p.apellido, p.fecha_nacimiento, p.cedula, v.fecha_llegada, v.queja_principal
     FROM visitas v
     JOIN pacientes p ON v.paciente_id = p.id
     WHERE v.id = ?
@@ -59,7 +59,7 @@ $age = $birthdate->diff($today)->y;
     <li><strong>Fecha de nacimiento:</strong> <?= htmlspecialchars($paciente['fecha_nacimiento']) ?> (<?= $age ?> años)</li>
     <li><strong>Cédula:</strong> <?= htmlspecialchars($paciente['cedula']) ?></li>
     <li><strong>Fecha de llegada:</strong> <?= htmlspecialchars($paciente['fecha_llegada']) ?></li>
-    <li><strong>Queja principal:</strong> <?= nl2br(htmlspecialchars($paciente['queja'])) ?></li>
+    <li><strong>Queja principal:</strong> <?= nl2br(htmlspecialchars($paciente['queja_principal'])) ?></li>
 </ul>
 
 <br>

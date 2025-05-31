@@ -4,7 +4,13 @@ require_once '../includes/db.php';
 
 verificarTipoUsuario('administrador');  // Only allow admin
 
-// Fetch users from database
+// Check how many active administrators exist
+$sql_admins = "SELECT COUNT(*) AS total_admins FROM usuarios WHERE tipo_usuario = 'administrador' AND activo = 1";
+$result_admins = $conn->query($sql_admins);
+$row_admins = $result_admins->fetch_assoc();
+$total_admins = (int) $row_admins['total_admins'];
+
+// Fetch usuarios from database
 $sql = "SELECT id, nombre_usuario, correo_electronico, tipo_usuario, activo FROM usuarios";
 $result = $conn->query($sql);
 
@@ -61,36 +67,50 @@ if (!$result) {
             </tr>
         </thead>
         <tbody>
-            <?php while ($user = $result->fetch_assoc()): ?>
+            <?php while ($usuario = $result->fetch_assoc()):
+                $isLastAdmin = $usuario['tipo_usuario'] === 'administrador' && $usuario['activo'] && $total_admins === 1;
+                ?>
                 <tr>
-                    <td><?= htmlspecialchars($user['nombre_usuario']) ?></td>
-                    <td><?= htmlspecialchars($user['correo_electronico']) ?></td>
-                    <td><?= htmlspecialchars($user['tipo_usuario']) ?></td>
+                    <td><?= htmlspecialchars($usuario['nombre_usuario']) ?></td>
+                    <td><?= htmlspecialchars($usuario['correo_electronico']) ?></td>
+                    <td><?= htmlspecialchars($usuario['tipo_usuario']) ?></td>
                     <td>
-                        <form method="post" action="reset_user_password.php"
+                        <form method="post" action="reset_usuario_password.php"
                             onsubmit="return confirm('¿Seguro que quieres reiniciar la contraseña?');">
-                            <input type="hidden" name="usuario_id" value="<?= $user['id'] ?>" />
+                            <input type="hidden" name="usuario_id" value="<?= $usuario['id'] ?>" />
                             <button type="submit" name="reset_password">Resetear</button>
                         </form>
                     </td>
-                    <td><?= $user['activo'] ? 'Sí' : 'No' ?></td>
+                    <td><?= $usuario['activo'] ? 'Sí' : 'No' ?></td>
                     <td>
-                        <a href="update_user.php?id=<?= $user['id'] ?>">Editar</a>
+                        <a href="update_usuario.php?id=<?= $usuario['id'] ?>">Editar</a>
                     </td>
                     <td>
-                        <?php if ($user['activo']): ?>
-                            <form method="post" action="delete_user.php"
-                                onsubmit="return confirm('¿Estás seguro que quieres desactivar este usuario?');"
-                                style="display:inline;">
-                                <input type="hidden" name="user_id" value="<?= $usuario['id'] ?>" />
-                                <button type="submit">Eliminar</button>
-                            </form>
+                        <?php if ($usuario['activo']): ?>
+                            <?php if (!$isLastAdmin): ?>
+                                <form method="post" action="delete_user.php"
+                                    onsubmit="return confirm('¿Estás seguro que quieres desactivar este usuario?');"
+                                    style="display:inline;">
+                                    <input type="hidden" name="user_id" value="<?= $usuario['id'] ?>" />
+                                    <button type="submit">Eliminar</button>
+                                </form>
+                            <?php else: ?>
+                                <button type="button" disabled title="No se puede eliminar el último administrador" style="opacity: 0.5; cursor: not-allowed;" >Eliminar</button>
+                            <?php endif; ?>
                         <?php else: ?>
                             Inactivo
                         <?php endif; ?>
                     </td>
                 </tr>
             <?php endwhile; ?>
+            <tr>
+                <td colspan="7">
+                    <a href="../general/reporte_estadicticas.php" class="btn" style="margin-left: 10px;"
+                        target="_blank">
+                        Ver Reporte de Visitas
+                    </a>
+                </td>
+            </tr>
         </tbody>
     </table>
 </body>

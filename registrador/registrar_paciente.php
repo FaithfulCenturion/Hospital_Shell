@@ -96,7 +96,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 </head>
 
 <body>
-<a href="javascript:history.back()" style="position: absolute; top: 10px; left: 10px; text-decoration: none; font-weight: bold;">← Volver</a>
+    <a href="javascript:history.back()"
+        style="position: absolute; top: 10px; left: 10px; text-decoration: none; font-weight: bold;">← Volver</a>
 
 
     <h2>
@@ -136,6 +137,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
         <label for="queja">Queja principal:</label><br>
         <textarea id="queja" name="queja" rows="3" cols="30" required></textarea><br><br>
+
+        <?php if ($campos_desactivado): ?>
+            <input type="hidden" name="nombre" value="<?= htmlspecialchars($prellenado['nombre']) ?>">
+            <input type="hidden" name="apellido" value="<?= htmlspecialchars($prellenado['apellido']) ?>">
+            <input type="hidden" name="fecha_nacimiento" value="<?= htmlspecialchars($prellenado['fecha_nacimiento']) ?>">
+            <input type="hidden" name="genero" value="<?= htmlspecialchars($prellenado['genero']) ?>">
+            <input type="hidden" name="cedula" value="<?= htmlspecialchars($prellenado['cedula']) ?>">
+        <?php endif; ?>
 
         <button type="submit">Registrar paciente</button>
     </form>
