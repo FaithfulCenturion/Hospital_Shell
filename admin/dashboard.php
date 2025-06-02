@@ -1,6 +1,9 @@
 <?php
+$pageTitle = 'Dashboard del Admin';
 require_once '../includes/auth.php';
 require_once '../includes/db.php';
+include_once '../includes/header.php';
+// Verifica que el usuario sea un administrador
 
 verificarTipoUsuario('administrador');  // Only allow admin
 
@@ -19,43 +22,15 @@ if (!$result) {
 }
 ?>
 
-<!DOCTYPE html>
-<html lang="es">
-
-<head>
-    <meta charset="UTF-8" />
-    <title>Dashboard de Admin - Usuarios</title>
-    <style>
-        table {
-            border-collapse: collapse;
-            width: 80%;
-            margin: 20px auto;
-        }
-
-        th,
-        td {
-            border: 1px solid #333;
-            padding: 8px 12px;
-            text-align: left;
-        }
-
-        th {
-            background: #555;
-            color: #fff;
-        }
-    </style>
-</head>
-
-<body>
     <h1>Usuarios actuales</h1>
-    <div style="text-align: center; margin-bottom: 20px;">
+    <div class="text-center mb-3">
         <a href="../login/register.php">
-            <button style="padding: 10px 20px; font-size: 16px;">Crear nuevo usuario</button>
+            <button class="btn btn-primary">Crear nuevo usuario</button>
         </a>
     </div>
 
-    <table>
-        <thead>
+    <table class="table table-striped table-bordered table-hover">
+        <thead class="table-dark">
             <tr>
                 <th>Nombre de usuario</th>
                 <th>Correo Electronico</th>
@@ -78,24 +53,24 @@ if (!$result) {
                         <form method="post" action="reset_usuario_password.php"
                             onsubmit="return confirm('¿Seguro que quieres reiniciar la contraseña?');">
                             <input type="hidden" name="usuario_id" value="<?= $usuario['id'] ?>" />
-                            <button type="submit" name="reset_password">Resetear</button>
+                            <button type="submit" class="btn btn-outline-secondary btn-sm" name="reset_password">Resetear</button>
                         </form>
                     </td>
                     <td><?= $usuario['activo'] ? 'Sí' : 'No' ?></td>
                     <td>
-                        <a href="update_usuario.php?id=<?= $usuario['id'] ?>">Editar</a>
+                        <a class="btn btn-outline-secondary btn-sm" href="update_usuario.php?id=<?= $usuario['id'] ?>">Editar</a>
                     </td>
                     <td>
                         <?php if ($usuario['activo']): ?>
                             <?php if (!$isLastAdmin): ?>
                                 <form method="post" action="delete_user.php"
                                     onsubmit="return confirm('¿Estás seguro que quieres desactivar este usuario?');"
-                                    style="display:inline;">
+                                    class="d-inline">
                                     <input type="hidden" name="user_id" value="<?= $usuario['id'] ?>" />
-                                    <button type="submit">Eliminar</button>
+                                    <button type="submit" class="btn btn-danger btn-sm">Eliminar</button>
                                 </form>
                             <?php else: ?>
-                                <button type="button" disabled title="No se puede eliminar el último administrador" style="opacity: 0.5; cursor: not-allowed;" >Eliminar</button>
+                                <button type="button" disabled title="No se puede eliminar el último administrador" class="btn btn-danger btn-sm" >Eliminar</button>
                             <?php endif; ?>
                         <?php else: ?>
                             Inactivo
@@ -117,16 +92,6 @@ if (!$result) {
 
 <br><br>
 
-<footer>
-    <p style="display: flex; justify-content: space-between; align-items: center; margin: 0;">
-        <a href="../general/password_reset.php">Restablecer mi contraseña</a>
-        <a href="../login/logout.php">Cerrar sesión</a>
-    </p>
-</footer>
-
-
-</html>
-
-<?php
+<?php include '../includes/footer.php'; 
 $conn->close();
 ?>

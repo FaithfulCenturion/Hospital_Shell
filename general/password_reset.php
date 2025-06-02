@@ -1,5 +1,5 @@
 <?php
-require_once '../includes/auth_general.php'; // handles session start and login check
+require_once '../includes/auth_general.php'; // Maneja el inicio de sesión y la verificación de inicio de sesión
 require_once '../includes/db.php';
 
 $mensaje = "";

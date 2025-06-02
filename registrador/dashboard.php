@@ -1,6 +1,9 @@
 <?php
+$pageTitle = 'Dashboard del Registrador';
 require_once '../includes/auth.php';
 require_once '../includes/db.php';
+include_once '../includes/header.php';
+// Verifica que el usuario sea un registrador
 
 verificarTipoUsuario('registrador');
 
@@ -13,67 +16,13 @@ $sql = "
     ORDER BY v.fecha_llegada ASC
 ";
 $result = $conn->query($sql);
-
-function tiempoEspera($fecha_llegada)
-{
-    $espera = time() - strtotime($fecha_llegada);
-    $min = floor($espera / 60);
-    return $min . ' min';
-}
 ?>
-
-<!DOCTYPE html>
-<html lang="es">
-
-<head>
-    <meta charset="UTF-8">
-    <title>Registrador del panel de control</title>
-    <style>
-        table {
-            border-collapse: collapse;
-            margin: 20px 0;
-            width: 100%;
-        }
-
-        th,
-        td {
-            border: 1px solid #999;
-            padding: 8px;
-            text-align: left;
-        }
-
-        th {
-            background: #444;
-            color: white;
-        }
-
-        .top-bar {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        .btn {
-            padding: 8px 16px;
-            background: #28a745;
-            color: white;
-            text-decoration: none;
-            border-radius: 4px;
-        }
-
-        .btn:hover {
-            background: #218838;
-        }
-    </style>
-</head>
-
-<body>
 
     <div class="top-bar">
         <h2>Pacientes en espera</h2>
         <div>
-            <a class="btn" href="registrar_paciente.php">Registrar nuevo paciente</a>
-            <a class="btn" href="buscar_paciente.php" style="background: #007bff; margin-left: 10px;">Buscar paciente
+            <a class="btn btn-success" href="registrar_paciente.php">Registrar nuevo paciente</a>
+            <a class="btn btn-secondary" href="buscar_paciente.php">Buscar paciente
                 existente</a>
         </div>
     </div>
@@ -94,8 +43,8 @@ function tiempoEspera($fecha_llegada)
 
 
     <?php if ($result->num_rows > 0): ?>
-        <table>
-            <thead>
+        <table class="table table-striped table-bordered table-hover">
+            <thead class="table-dark">
                 <tr>
                     <th>Nombre</th>
                     <th>Fecha de nacimiento</th>
@@ -116,10 +65,10 @@ function tiempoEspera($fecha_llegada)
                         </td>
                         <td>
                             <form method="POST" action="../general/cancelar_visita.php"
-                                onsubmit="return confirm('¿Está seguro que desea cancelar esta visita?');">
+                                onsubmit="return confirm('¿Está seguro que desea cancelar esta visita?');" class="d-inline">
                                 <input type="hidden" name="visita_id" value="<?= (int) $fila['visita_id'] ?>">
                                 <button type="submit"
-                                    style="background:#dc3545; color:white; border:none; padding:5px 10px; cursor:pointer;">
+                                    class="btn btn-danger btn-sm">
                                     Cancelar
                                 </button>
                             </form>
@@ -133,15 +82,6 @@ function tiempoEspera($fecha_llegada)
     <?php endif; ?>
 
     <br><br>
-
-    <footer>
-        <p style="display: flex; justify-content: space-between; align-items: center; margin: 0;">
-            <a href="../general/password_reset.php">Restablecer mi contraseña</a>
-            <a href="../login/logout.php">Cerrar sesión</a>
-        </p>
-    </footer>
-
     <script src="../js/actualizarTiempoEspera.js"></script>
-</body>
 
-</html>
+<?php include '../includes/footer.php'; ?>

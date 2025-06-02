@@ -1,6 +1,9 @@
 <?php
+$pageTitle = 'Dashboard del Doctor';
 require_once '../includes/auth.php';
 require_once '../includes/db.php';
+include_once '../includes/header.php';
+// Verifica que el usuario sea un doctor
 verificarTipoUsuario('doctor');
 
 // Conexión a la base de datos
@@ -20,33 +23,16 @@ if (!$result) {
 $pacientes = $result->fetch_all(MYSQLI_ASSOC);
 ?>
 
-<!DOCTYPE html>
-<html lang="es">
-
-<head>
-    <meta charset="UTF-8">
-    <title>Panel del Doctor</title>
-</head>
-
-<body>
     <h2>Pacientes Registrados</h2>
 
     <?php if (isset($_GET['msg'])): ?>
-        <p style="color: green; font-weight: bold;">
-            <?php
-            // Map known messages to user-friendly text
-            $messages = [
-                'visita_cancelada' => '✅ Visita cancelada correctamente.',
-                'otro_evento' => 'Otro mensaje aquí...',
-            ];
+    <div class="alert alert-success">
+        <?= $messages[$_GET['msg']] ?? 'Mensaje desconocido.' ?>
+    </div>
+<?php endif; ?>
 
-            echo $messages[$_GET['msg']] ?? 'Mensaje desconocido.';
-            ?>
-        </p>
-    <?php endif; ?>
-
-    <table border="1" cellpadding="8" style="border-collapse: collapse; width: 100%;">
-        <thead>
+    <table class="table table-striped table-bordered table-hover">
+        <thead class="table-dark">
             <tr>
                 <th>Nombre</th>
                 <th>Apellido</th>
@@ -69,17 +55,16 @@ $pacientes = $result->fetch_all(MYSQLI_ASSOC);
                             data-fecha-llegada="<?= htmlspecialchars($p['fecha_llegada']) ?>"></span>
                     </td>
                     <td>
-                        <form method="post" action="atender_paciente.php" style="margin: 0;">
+                        <form method="post" action="atender_paciente.php" class="d-inline">
                             <input type="hidden" name="visita_id" value="<?= $p['visita_id'] ?>">
-                            <button type="submit">Seleccionar</button>
+                            <button type="submit" class="btn btn-success btn-sm">Seleccionar</button>
                         </form>
                     </td>
                     <td>
                         <form method="POST" action="../general/cancelar_visita.php"
-                            onsubmit="return confirm('¿Está seguro que desea cancelar esta visita?');">
+                            onsubmit="return confirm('¿Está seguro que desea cancelar esta visita?');" class="d-inline">
                             <input type="hidden" name="visita_id" value="<?= (int) $fila['visita_id'] ?>">
-                            <button type="submit"
-                                style="background:#dc3545; color:white; border:none; padding:5px 10px; cursor:pointer;">
+                            <button type="submit" class="btn btn-danger btn-sm">
                                 Cancelar
                             </button>
                         </form>
@@ -97,17 +82,7 @@ $pacientes = $result->fetch_all(MYSQLI_ASSOC);
         </tbody>
     </table>
 
-
+    <script src="../js/actualizarTiempoEspera.js"></script>
     <br><br>
 
-    <footer>
-        <p style="display: flex; justify-content: space-between; align-items: center; margin: 0;">
-            <a href="../general/password_reset.php">Restablecer mi contraseña</a>
-            <a href="../login/logout.php">Cerrar sesión</a>
-        </p>
-    </footer>
-
-    <script src="../js/actualizarTiempoEspera.js"></script>
-</body>
-
-</html>
+    <?php include '../includes/footer.php'; ?>

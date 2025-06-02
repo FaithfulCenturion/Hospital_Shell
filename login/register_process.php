@@ -13,12 +13,6 @@ if (empty($nombre_usuario) || empty($email) || empty($contraseña) || empty($tip
     die("Por favor completa todos los campos.");
 }
 
-// Validar que no puedan registrarse como administradores
-$tipos_permitidos = ['registrador', 'doctor'];
-if (!in_array($tipo_usuario, $tipos_permitidos)) {
-    die("Tipo de usuario no permitido.");
-}
-
 // Comprobar si el nombre de usuario o el correo electrónico ya existen
 $stmt = $conn->prepare("SELECT id FROM usuarios WHERE nombre_usuario = ? OR correo_electronico = ?");
 $stmt->bind_param("ss", $nombre_usuario, $email);
