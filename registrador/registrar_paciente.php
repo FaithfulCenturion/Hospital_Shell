@@ -1,6 +1,9 @@
 <?php
+$pageTitle = 'Registrar Paciente';
 require_once '../includes/auth.php';
 require_once '../includes/db.php';
+include_once '../includes/header.php';
+// Verifica que el usuario sea un registrador
 verificarTipoUsuario('registrador');
 
 
@@ -24,7 +27,7 @@ if (isset($_GET['paciente_id']) && is_numeric($_GET['paciente_id'])) {
 
     $stmt->execute();
 
-    // Temporary variables to hold the result
+    // Variables temporales para almacenar el resultado
     $nombre = $apellido = $fechaNacimiento = $cedula = $genero = null;
     $stmt->bind_result($nombre, $apellido, $fechaNacimiento, $cedula, $genero);
 
@@ -38,7 +41,7 @@ if (isset($_GET['paciente_id']) && is_numeric($_GET['paciente_id'])) {
         ];
         $campos_desactivado = true;
     } else {
-        $paciente_id = null; // fallback
+        $paciente_id = null; // retroceder
     }
     $stmt->close();
 }
@@ -87,77 +90,77 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 }
 ?>
 
-<!DOCTYPE html>
-<html lang="es">
+<div class="container mt-4">
+    <a href="javascript:history.back()" class="btn btn-outline-secondary mb-3">← Volver</a>
 
-<head>
-    <meta charset="UTF-8">
-    <title>Registrar Paciente</title>
-</head>
-
-<body>
-    <a href="javascript:history.back()"
-        style="position: absolute; top: 10px; left: 10px; text-decoration: none; font-weight: bold;">← Volver</a>
-
-
-    <h2>
+    <h2 class="mb-4">
         Registrar <?= $campos_desactivado ? 'paciente' : 'nuevo paciente' ?>
     </h2>
 
     <?php if (!empty($mensaje)): ?>
-        <p style="color: green;"><?= htmlspecialchars($mensaje) ?></p>
+        <div class="alert alert-info"><?= htmlspecialchars($mensaje) ?></div>
     <?php endif; ?>
 
-    <form method="post" autocomplete="off">
-        <label for="nombre">Nombre:</label><br>
-        <input type="text" id="nombre" name="nombre" value="<?= htmlspecialchars($prellenado['nombre']) ?>"
-            <?= $campos_desactivado ? 'readonly' : '' ?> required><br>
+    <form method="post" autocomplete="off" class="row g-3">
+        <div class="col-md-6">
+            <label for="nombre" class="form-label">Nombre:</label>
+            <input type="text" id="nombre" name="nombre" class="form-control"
+                value="<?= htmlspecialchars($prellenado['nombre']) ?>" <?= $campos_desactivado ? 'readonly' : '' ?>
+                required>
+        </div>
 
-        <label for="apellido">Apellido:</label><br>
-        <input type="text" id="apellido" name="apellido" value="<?= htmlspecialchars($prellenado['apellido']) ?>"
-            <?= $campos_desactivado ? 'readonly' : '' ?> required><br>
+        <div class="col-md-6">
+            <label for="apellido" class="form-label">Apellido:</label>
+            <input type="text" id="apellido" name="apellido" class="form-control"
+                value="<?= htmlspecialchars($prellenado['apellido']) ?>" <?= $campos_desactivado ? 'readonly' : '' ?>
+                required>
+        </div>
 
-        <label for="fecha_nacimiento">Fecha de nacimiento:</label><br>
-        <input type="date" id="fecha_nacimiento" name="fecha_nacimiento"
-            value="<?= htmlspecialchars($prellenado['fecha_nacimiento']) ?>" <?= $campos_desactivado ? 'readonly' : '' ?>
-            required><br>
+        <div class="col-md-6">
+            <label for="fecha_nacimiento" class="form-label">Fecha de nacimiento:</label>
+            <input type="date" id="fecha_nacimiento" name="fecha_nacimiento" class="form-control"
+                value="<?= htmlspecialchars($prellenado['fecha_nacimiento']) ?>"
+                <?= $campos_desactivado ? 'readonly' : '' ?> required>
+        </div>
 
-        <label for="genero">Género:</label><br>
-        <select id="genero" name="genero" required <?= $campos_desactivado ? 'disabled' : '' ?>>
-            <option value="">Seleccione...</option>
-            <option value="M" <?= isset($genero) && $genero === 'M' ? 'selected' : '' ?>>Masculino</option>
-            <option value="F" <?= isset($genero) && $genero === 'F' ? 'selected' : '' ?>>Femenino</option>
-            <option value="Otro" <?= isset($genero) && $genero === 'Otro' ? 'selected' : '' ?>>Otro</option>
-        </select><br>
+        <div class="col-md-6">
+            <label for="genero" class="form-label">Género:</label>
+            <select id="genero" name="genero" class="form-select" required <?= $campos_desactivado ? 'disabled' : '' ?>>
+                <option value="">Seleccione...</option>
+                <option value="M" <?= isset($genero) && $genero === 'M' ? 'selected' : '' ?>>Masculino</option>
+                <option value="F" <?= isset($genero) && $genero === 'F' ? 'selected' : '' ?>>Femenino</option>
+                <option value="Otro" <?= isset($genero) && $genero === 'Otro' ? 'selected' : '' ?>>Otro</option>
+            </select>
+        </div>
 
+        <div class="col-md-6">
+            <label for="cedula" class="form-label">Cédula:</label>
+            <input type="text" id="cedula" name="cedula" class="form-control"
+                value="<?= htmlspecialchars($prellenado['cedula']) ?>" <?= $campos_desactivado ? 'readonly' : '' ?>
+                required>
+        </div>
 
-        <label for="cedula">Cédula:</label><br>
-        <input type="text" id="cedula" name="cedula" value="<?= htmlspecialchars($prellenado['cedula']) ?>"
-            <?= $campos_desactivado ? 'readonly' : '' ?> required><br>
-
-        <label for="queja">Queja principal:</label><br>
-        <textarea id="queja" name="queja" rows="3" cols="30" required></textarea><br><br>
+        <div class="col-md-12">
+            <label for="queja" class="form-label">Queja principal:</label>
+            <textarea id="queja" name="queja" rows="3" class="form-control" required></textarea>
+        </div>
 
         <?php if ($campos_desactivado): ?>
-            <input type="hidden" name="nombre" value="<?= htmlspecialchars($prellenado['nombre']) ?>">
-            <input type="hidden" name="apellido" value="<?= htmlspecialchars($prellenado['apellido']) ?>">
-            <input type="hidden" name="fecha_nacimiento" value="<?= htmlspecialchars($prellenado['fecha_nacimiento']) ?>">
-            <input type="hidden" name="genero" value="<?= htmlspecialchars($prellenado['genero']) ?>">
-            <input type="hidden" name="cedula" value="<?= htmlspecialchars($prellenado['cedula']) ?>">
+            <?php foreach ($prellenado as $key => $value): ?>
+                <input type="hidden" name="<?= $key ?>" value="<?= htmlspecialchars($value) ?>">
+            <?php endforeach; ?>
         <?php endif; ?>
 
-        <button type="submit">Registrar paciente</button>
+        <div class="col-12">
+            <button type="submit" class="btn btn-primary">Registrar paciente</button>
+        </div>
     </form>
 
-    <br><br>
-
-    <footer>
-        <p style="display: flex; justify-content: space-between; align-items: center; margin: 0;">
-            <a href="../general/password_reset.php">Restablecer mi contraseña</a>
-            <a href="../login/logout.php">Cerrar sesión</a>
-        </p>
+    <hr class="my-4">
+    <footer class="d-flex justify-content-between">
+        <a href="../general/password_reset.php">Restablecer mi contraseña</a>
+        <a href="../login/logout.php">Cerrar sesión</a>
     </footer>
+</div>
 
-</body>
-
-</html>
+<?php include '../includes/footer.php'; ?>

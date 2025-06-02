@@ -50,20 +50,36 @@ $age = $birthdate->diff($today)->y;
 <head>
     <meta charset="UTF-8">
     <title>Atendiendo a <?= htmlspecialchars($paciente['nombre']) ?></title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
 </head>
 <body>
 
-<h2>Atendiendo a <?= htmlspecialchars($paciente['nombre'] . ' ' . $paciente['apellido']) ?></h2>
+<div class="container mt-5">
+    <a href="dashboard.php" class="btn btn-link mb-3">← Volver al panel</a>
 
-<ul>
-    <li><strong>Fecha de nacimiento:</strong> <?= htmlspecialchars($paciente['fecha_nacimiento']) ?> (<?= $age ?> años)</li>
-    <li><strong>Cédula:</strong> <?= htmlspecialchars($paciente['cedula']) ?></li>
-    <li><strong>Fecha de llegada:</strong> <?= htmlspecialchars($paciente['fecha_llegada']) ?></li>
-    <li><strong>Queja principal:</strong> <?= nl2br(htmlspecialchars($paciente['queja_principal'])) ?></li>
-</ul>
-
-<br>
-<a href="dashboard.php">← Volver al panel</a>
+    <div class="card shadow">
+        <div class="card-header bg-primary text-white">
+            <h4 class="mb-0">Atendiendo a <?= htmlspecialchars($paciente['nombre'] . ' ' . $paciente['apellido']) ?></h4>
+        </div>
+        <div class="card-body">
+            <ul class="list-group list-group-flush">
+                <li class="list-group-item">
+                    <strong>Fecha de nacimiento:</strong> <?= htmlspecialchars($paciente['fecha_nacimiento']) ?> (<?= $age ?> años)
+                </li>
+                <li class="list-group-item">
+                    <strong>Cédula:</strong> <?= htmlspecialchars($paciente['cedula']) ?>
+                </li>
+                <li class="list-group-item">
+                    <strong>Fecha de llegada:</strong> <?= htmlspecialchars($paciente['fecha_llegada']) ?>
+                </li>
+                <li class="list-group-item">
+                    <strong>Queja principal:</strong><br>
+                    <?= nl2br(htmlspecialchars($paciente['queja_principal'])) ?>
+                </li>
+            </ul>
+        </div>
+    </div>
+</div>
 
 </body>
 </html>

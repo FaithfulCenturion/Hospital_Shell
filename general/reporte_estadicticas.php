@@ -55,36 +55,55 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET' && isset($_GET['fecha_inicio'], $_GET['
 <head>
     <meta charset="UTF-8">
     <title>Reporte de Estadísticas</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
 </head>
 
-<body>
-    <a href="javascript:history.back()">← Volver al panel</a> <br><br>
 
-    <h2>📊 Reporte de Estadísticas de Atención</h2>
+<body class="bg-light">
 
-    <form method="get">
-        <label for="fecha_inicio">Desde:</label>
-        <input type="date" id="fecha_inicio" name="fecha_inicio" value="<?= htmlspecialchars($fecha_inicio) ?>"
-            required>
-        <label for="fecha_fin">Hasta:</label>
-        <input type="date" id="fecha_fin" name="fecha_fin" value="<?= htmlspecialchars($fecha_fin) ?>" required>
-        <button type="submit">Consultar</button>
+<div class="container mt-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2>📊 Reporte de Estadísticas de Atención</h2>
+        <a href="javascript:history.back()" class="btn btn-secondary">← Volver</a>
+    </div>
+
+    <form method="get" class="row g-3 mb-4">
+        <div class="col-md-4">
+            <label for="fecha_inicio" class="form-label">Desde:</label>
+            <input type="date" id="fecha_inicio" name="fecha_inicio"
+                   value="<?= htmlspecialchars($fecha_inicio) ?>" class="form-control" required>
+        </div>
+        <div class="col-md-4">
+            <label for="fecha_fin" class="form-label">Hasta:</label>
+            <input type="date" id="fecha_fin" name="fecha_fin"
+                   value="<?= htmlspecialchars($fecha_fin) ?>" class="form-control" required>
+        </div>
+        <div class="col-md-4 d-flex align-items-end">
+            <button type="submit" class="btn btn-primary w-100">Consultar</button>
+        </div>
     </form>
 
     <?php if ($error): ?>
-        <p style="color: red;"><?= htmlspecialchars($error) ?></p>
+        <div class="alert alert-danger"><?= htmlspecialchars($error) ?></div>
     <?php elseif ($stats): ?>
-        <h3>Resultados del <?= htmlspecialchars($fecha_inicio) ?> al <?= htmlspecialchars($fecha_fin) ?></h3>
-        <ul>
-            <li>Total de pacientes atendidos: <strong><?= $stats['total'] ?></strong></li>
-            <li>Tiempo de espera promedio: <strong><?= $stats['promedio'] ?> minutos</strong></li>
-            <li>Tiempo de espera más largo: <strong><?= $stats['maxima'] ?> minutos</strong></li>
-        </ul>
+        <div class="card">
+            <div class="card-header bg-success text-white">
+                Resultados del <?= htmlspecialchars($fecha_inicio) ?> al <?= htmlspecialchars($fecha_fin) ?>
+            </div>
+            <ul class="list-group list-group-flush">
+                <li class="list-group-item">Total de pacientes atendidos: <strong><?= $stats['total'] ?></strong></li>
+                <li class="list-group-item">Tiempo de espera promedio: <strong><?= $stats['promedio'] ?> minutos</strong></li>
+                <li class="list-group-item">Tiempo de espera más largo: <strong><?= $stats['maxima'] ?> minutos</strong></li>
+            </ul>
+        </div>
     <?php endif; ?>
 
-    <br>
-    <a href="../<?= $_SESSION['tipo_usuario'] ?>/dashboard.php">← Volver al dashboard</a>
+    <div class="mt-4 text-center">
+        <a href="../<?= $_SESSION['tipo_usuario'] ?>/dashboard.php" class="btn btn-outline-primary">
+            ← Volver al dashboard
+        </a>
+    </div>
+</div>
 
 </body>
-
 </html>

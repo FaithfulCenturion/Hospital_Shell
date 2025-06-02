@@ -1,6 +1,9 @@
 <?php
+$pageTitle = 'Actualizar Usuario';
 require_once '../includes/db.php';
 require_once '../includes/auth.php';
+include_once '../includes/header.php';
+// Verifica que el usuario sea un administrador
 verificarTipoUsuario('administrador');
 
 if (!isset($_GET['id'])) {
@@ -41,53 +44,55 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $update->bind_param("ssii", $correo, $tipo, $activo, $id);
 
     if ($update->execute()) {
-        echo "Usuario actualizado correctamente. <a href='dashboard.php'>Volver al panel</a>";
+        echo "<div class='alert alert-success text-center'>Usuario actualizado correctamente. <a href='dashboard.php'>Volver al panel</a></div>";
         exit;
     } else {
-        echo "Error al actualizar el usuario.";
+        echo "<div class='alert alert-danger'>Error al actualizar el usuario.</div>";
     }
 }
 ?>
 
-<!DOCTYPE html>
-<html lang="es">
+<a href="javascript:history.back()" class="btn btn-link mt-3 ms-3">← Volver</a>
 
-<head>
-    <meta charset="UTF-8">
-    <title>Actualizar Usuario</title>
-</head>
+<div class="container mt-5">
+    <div class="card">
+        <div class="card-header">
+            <h3>Actualizar Usuario: <?= htmlspecialchars($usuario['nombre_usuario']) ?></h3>
+        </div>
+        <div class="card-body">
+            <form method="post">
+                <div class="mb-3">
+                    <label for="correo_electronico" class="form-label">Email:</label>
+                    <input type="email" class="form-control" name="correo_electronico" id="correo_electronico"
+                        value="<?= htmlspecialchars($usuario['correo_electronico']) ?>" required>
+                </div>
 
-<body>
-<a href="javascript:history.back()" style="position: absolute; top: 10px; left: 10px; text-decoration: none; font-weight: bold;">← Volver</a>
+                <div class="mb-3">
+                    <label for="tipo_usuario" class="form-label">Tipo de Usuario:</label>
+                    <select class="form-select" name="tipo_usuario" id="tipo_usuario"
+                        <?= ($isSelfEdit && $isLastAdmin) ? 'disabled' : '' ?> required>
+                        <option value="administrador" <?= $usuario['tipo_usuario'] === 'administrador' ? 'selected' : '' ?>>Administrador</option>
+                        <option value="doctor" <?= $usuario['tipo_usuario'] === 'doctor' ? 'selected' : '' ?>>Doctor</option>
+                        <option value="registrador" <?= $usuario['tipo_usuario'] === 'registrador' ? 'selected' : '' ?>>Registrador</option>
+                    </select>
+                </div>
 
-    <h2>Actualizar Usuario: <?= htmlspecialchars($usuario['nombre_usuario']) ?></h2>
-    <form method="post">
-        <label>Email:</label><br>
-        <input type="email" name="correo_electronico" value="<?= htmlspecialchars($usuario['correo_electronico']) ?>"
-            required><br><br>
+                <div class="form-check mb-3">
+                    <input class="form-check-input" type="checkbox" name="activo" id="activo"
+                        <?= $usuario['activo'] ? 'checked' : '' ?> <?= ($isSelfEdit && $isLastAdmin) ? 'disabled' : '' ?>>
+                    <label class="form-check-label" for="activo">Usuario activo</label>
+                </div>
 
-        <label>Tipo de Usuario:</label><br>
-        <select name="tipo_usuario" required <?= ($isSelfEdit && $isLastAdmin) ? 'disabled' : '' ?>>
-            <option value="administrador" <?= $usuario['tipo_usuario'] === 'administrador' ? 'selected' : '' ?>>
-                Administrador</option>
-            <option value="doctor" <?= $usuario['tipo_usuario'] === 'doctor' ? 'selected' : '' ?>>Doctor</option>
-            <option value="registrador" <?= $usuario['tipo_usuario'] === 'registrador' ? 'selected' : '' ?>>Registrador
-            </option>
-        </select><br><br>
+                <?php if ($isSelfEdit && $isLastAdmin): ?>
+                    <input type="hidden" name="tipo_usuario" value="administrador">
+                    <input type="hidden" name="activo" value="1">
+                <?php endif; ?>
 
-        <label>
-            <input type="checkbox" name="activo" <?= $usuario['activo'] ? 'checked' : '' ?> <?= ($isSelfEdit && $isLastAdmin) ? 'disabled' : '' ?>>
-            Usuario activo
-        </label><br><br>
-        <?php if ($isSelfEdit && $isLastAdmin): ?>
-            <input type="hidden" name="tipo_usuario" value="administrador">
-            <input type="hidden" name="activo" value="1">
-        <?php endif; ?>
+                <button type="submit" class="btn btn-primary">Guardar Cambios</button>
+                <a href="dashboard.php" class="btn btn-secondary ms-2">Cancelar</a>
+            </form>
+        </div>
+    </div>
+</div>
 
-        <button type="submit">Guardar Cambios</button>
-    </form>
-
-    <p><a href="dashboard.php">Volver al Panel de Administración</a></p>
-</body>
-
-</html>
+<?php include '../includes/footer.php'; ?>

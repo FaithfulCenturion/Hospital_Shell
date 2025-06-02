@@ -47,25 +47,51 @@ $conn->close();
 <head>
     <meta charset="UTF-8">
     <title>Restablecer contraseña</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
 </head>
-<body>
-    <h2>Restablecer contraseña</h2>
+<body class="bg-light">
 
-    <?php if ($mensaje): ?>
-        <p><strong><?php echo htmlspecialchars($mensaje); ?></strong></p>
-    <?php endif; ?>
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <div class="card shadow-sm">
+                <div class="card-header bg-primary text-white">
+                    <h4 class="mb-0">Restablecer contraseña</h4>
+                </div>
+                <div class="card-body">
+                    <?php if ($mensaje): ?>
+                        <div class="alert <?= str_contains($mensaje, 'éxito') ? 'alert-success' : 'alert-danger' ?>" role="alert">
+                            <?= htmlspecialchars($mensaje) ?>
+                        </div>
+                    <?php endif; ?>
 
-    <form action="password_reset.php" method="POST">
-        <label for="old_password">Contraseña actual:</label><br>
-        <input type="password" id="old_password" name="old_password" required><br><br>
+                    <form action="password_reset.php" method="POST">
+                        <div class="mb-3">
+                            <label for="old_password" class="form-label">Contraseña actual:</label>
+                            <input type="password" class="form-control" id="old_password" name="old_password" required>
+                        </div>
 
-        <label for="new_password">Nueva contraseña:</label><br>
-        <input type="password" id="new_password" name="new_password" required><br><br>
+                        <div class="mb-3">
+                            <label for="new_password" class="form-label">Nueva contraseña:</label>
+                            <input type="password" class="form-control" id="new_password" name="new_password" required>
+                        </div>
 
-        <label for="confirm_password">Confirmar nueva contraseña:</label><br>
-        <input type="password" id="confirm_password" name="confirm_password" required><br><br>
+                        <div class="mb-3">
+                            <label for="confirm_password" class="form-label">Confirmar nueva contraseña:</label>
+                            <input type="password" class="form-control" id="confirm_password" name="confirm_password" required>
+                        </div>
 
-        <input type="submit" value="Actualizar contraseña">
-    </form>
+                        <button type="submit" class="btn btn-success w-100">Actualizar contraseña</button>
+                    </form>
+                </div>
+            </div>
+
+            <div class="text-center mt-3">
+                <a href="javascript:history.back()" class="btn btn-link">← Volver</a>
+            </div>
+        </div>
+    </div>
+</div>
+
 </body>
 </html>
