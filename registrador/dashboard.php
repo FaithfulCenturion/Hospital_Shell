@@ -20,8 +20,8 @@ $result = $conn->query($sql);
 
     <div class="top-bar">
         <h2>Pacientes en espera</h2>
-        <div>
-            <a class="btn btn-success" href="registrar_paciente.php">Registrar nuevo paciente</a>
+        <div class="btn-group mb-3">
+            <a class="btn btn-success me-2" href="registrar_paciente.php">Registrar nuevo paciente</a>
             <a class="btn btn-secondary" href="buscar_paciente.php">Buscar paciente
                 existente</a>
         </div>
