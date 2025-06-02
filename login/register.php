@@ -11,31 +11,51 @@ verificarTipoUsuario('administrador');  // Only allow admin
 <head>
     <meta charset="UTF-8" />
     <title>Registro - Hospital Shell</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
 </head>
 
-<body>
-<a href="javascript:history.back()" style="position: absolute; top: 10px; left: 10px; text-decoration: none; font-weight: bold;">← Volver</a>
-    <h1>Registro de Usuario</h1>
-    <form action="register_process.php" method="post">
-        <label for="nombre_usuario">Usuario:</label><br />
-        <input type="text" id="nombre_usuario" name="nombre_usuario" required /><br /><br />
+<body class="bg-light">
 
-        <label for="email">Correo Electrónico:</label><br />
-        <input type="email" id="email" name="email" required /><br /><br />
+    <div class="container mt-5">
+        <a href="javascript:history.back()" class="btn btn-outline-secondary mb-4">← Volver</a>
 
-        <label for="contraseña">Contraseña:</label><br />
-        <input type="password" id="contraseña" name="contraseña" required /><br /><br />
+        <div class="card shadow">
+            <div class="card-body">
+                <h1 class="card-title text-center mb-4">Registro de Usuario</h1>
 
-        <label for="tipo_usuario">Tipo de usuario:</label>
-        <select name="tipo_usuario" id="tipo_usuario" required>
-            <option value="registrador">Registrador</option>
-            <option value="doctor">Doctor</option>
-            <option value="administrador">Administrador</option>
-        </select>
-        <br><br>
+                <form action="register_process.php" method="post">
+                    <div class="mb-3">
+                        <label for="nombre_usuario" class="form-label">Usuario</label>
+                        <input type="text" class="form-control" id="nombre_usuario" name="nombre_usuario" required>
+                    </div>
 
-        <button type="submit">Registrar</button>
-    </form>
+                    <div class="mb-3">
+                        <label for="email" class="form-label">Correo Electrónico</label>
+                        <input type="email" class="form-control" id="email" name="email" required>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="contraseña" class="form-label">Contraseña</label>
+                        <input type="password" class="form-control" id="contraseña" name="contraseña" required>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="tipo_usuario" class="form-label">Tipo de usuario</label>
+                        <select class="form-select" name="tipo_usuario" id="tipo_usuario" required>
+                            <option value="registrador">Registrador</option>
+                            <option value="doctor">Doctor</option>
+                            <option value="administrador">Administrador</option>
+                        </select>
+                    </div>
+
+                    <div class="d-grid">
+                        <button type="submit" class="btn btn-primary">Registrar</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
 </body>
 
 </html>

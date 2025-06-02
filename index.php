@@ -1,7 +1,7 @@
 <?php
 session_start();
 $pageTitle = 'Login - Hospital Shell';
-include_once '../includes/header.php';
+include_once 'includes/header.php';
 
 if (isset($_SESSION['usuario_id']) && isset($_SESSION['tipo_usuario'])) {
     // Redirigir según el tipo de usuario
