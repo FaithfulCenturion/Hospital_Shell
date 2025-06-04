@@ -10,7 +10,7 @@ if (!in_array($_SESSION['tipo_usuario'], ['admin', 'doctor'])) {
 
 // Get visits data (you can customize the query)
 $sql = "
-    SELECT v.id AS visita_id, p.nombre, p.apellido, v.fecha_llegada, v.queja_principal, v.estado
+    SELECT v.id AS visita_id, p.nombre, p.apellido, v.fecha_llegada, v.notas, v.estado
     FROM visitas v
     JOIN pacientes p ON v.paciente_id = p.id
     ORDER BY v.fecha_llegada DESC
@@ -69,7 +69,7 @@ $result = $conn->query($sql);
                     <tr>
                         <td><?= htmlspecialchars($fila['nombre']) . ' ' . htmlspecialchars($fila['apellido']) ?></td>
                         <td><?= date('Y-m-d H:i', strtotime($fila['fecha_llegada'])) ?></td>
-                        <td><?= htmlspecialchars($fila['queja_principal']) ?></td>
+                        <td><?= htmlspecialchars($fila['notas']) ?></td>
                         <td><?= htmlspecialchars($fila['estado']) ?></td>
                     </tr>
                 <?php endwhile; ?>

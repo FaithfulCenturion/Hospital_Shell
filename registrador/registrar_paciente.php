@@ -51,12 +51,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $nombre = $_POST['nombre'] ?? '';
     $apellido = $_POST['apellido'] ?? '';
     $fechaNacimiento = $_POST['fecha_nacimiento'] ?? '';
-    $queja = $_POST['queja'] ?? '';
+    $notas = $_POST['notas'] ?? '';
     $cedula = $_POST['cedula'] ?? '';
     $genero = $_POST['genero'] ?? '';
 
     // Validar campos obligatorios
-    if ($nombre && $apellido && $fechaNacimiento && $queja && $cedula && $genero) {
+    if ($nombre && $apellido && $fechaNacimiento && $notas && $cedula && $genero) {
         // Si se trata de un paciente nuevo, insertar en pacientes
         if (!$campos_desactivado || !$paciente_id) {
             $stmt = $conn->prepare("INSERT INTO pacientes (nombre, apellido, fecha_nacimiento, cedula, genero) VALUES (?, ?, ?, ?, ?)");
@@ -73,8 +73,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
         // Insertar en visitas (tanto para pacientes nuevos como existentes)
         $estado = 'esperando';
-        $stmt2 = $conn->prepare("INSERT INTO visitas (paciente_id, fecha_llegada, queja_principal, estado) VALUES (?, NOW(), ?, ?)");
-        $stmt2->bind_param("iss", $paciente_id, $queja, $estado);
+        $stmt2 = $conn->prepare("INSERT INTO visitas (paciente_id, fecha_llegada, notas, estado) VALUES (?, NOW(), ?, ?)");
+        $stmt2->bind_param("iss", $paciente_id, $notas, $estado);
         if ($stmt2->execute()) {
             //$mensaje = "✅ Paciente registrado correctamente: $nombre $apellido";
             header("Location: dashboard.php"); // Redirigir al dashboard después de registrar
@@ -141,8 +141,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         </div>
 
         <div class="col-md-12">
-            <label for="queja" class="form-label">Queja principal:</label>
-            <textarea id="queja" name="queja" rows="3" class="form-control" required></textarea>
+            <label for="notas" class="form-label">Notas:</label>
+            <textarea id="notas" name="notas" rows="3" class="form-control" required></textarea>
         </div>
 
         <?php if ($campos_desactivado): ?>

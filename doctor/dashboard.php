@@ -8,11 +8,13 @@ verificarTipoUsuario('doctor');
 
 // Conexión a la base de datos
 $sql = "
-    SELECT v.id AS visita_id, p.nombre, p.apellido, p.fecha_nacimiento, v.queja_principal, v.fecha_llegada
+    SELECT v.id AS visita_id, p.nombre, p.apellido, p.fecha_nacimiento, v.notas, v.fecha_llegada, v.estado, v.fecha_esperando_resultados
     FROM visitas v
     JOIN pacientes p ON v.paciente_id = p.id
-    WHERE v.estado = 'esperando'
-    ORDER BY v.fecha_llegada ASC
+    WHERE v.estado IN ('esperando', 'esperando resultados')
+    ORDER BY 
+        CASE WHEN v.estado = 'esperando' THEN 0 ELSE 1 END,
+        v.fecha_llegada ASC
 ";
 $result = $conn->query($sql);
 
@@ -42,7 +44,8 @@ $pacientes = $result->fetch_all(MYSQLI_ASSOC);
             <th>Nombre</th>
             <th>Apellido</th>
             <th>Fecha de nacimiento</th>
-            <th>Queja principal</th>
+            <th>Notas</th>
+            <th>Estado</th>
             <th>Tiempo en espera</th>
             <th>Acción</th>
             <th>Cancelar visita</th>
@@ -50,13 +53,24 @@ $pacientes = $result->fetch_all(MYSQLI_ASSOC);
     </thead>
     <tbody>
         <?php foreach ($pacientes as $p): ?>
-            <tr>
+            <tr class="<?= $p['estado'] === 'esperando resultados' ? 'table-warning' : '' ?>">
                 <td><?= htmlspecialchars($p['nombre']) ?></td>
                 <td><?= htmlspecialchars($p['apellido']) ?></td>
                 <td><?= htmlspecialchars($p['fecha_nacimiento']) ?></td>
-                <td><?= htmlspecialchars($p['queja_principal']) ?></td>
+                <td><?= htmlspecialchars($p['notas']) ?></td>
                 <td>
-                    <span class="tiempo-espera" data-fecha-llegada="<?= htmlspecialchars($p['fecha_llegada']) ?>"></span>
+                    <?php if ($p['estado'] === 'esperando resultados'): ?>
+                        <span class="badge bg-warning text-dark">Esperando Resultados</span>
+                    <?php else: ?>
+                        <span class="badge bg-primary">Esperando</span>
+                    <?php endif; ?>
+                </td>
+                <td>
+                    <span class="tiempo-espera" data-fecha-llegada="<?= htmlspecialchars(
+                        $p['estado'] === 'esperando resultados'
+                        ? $p['fecha_esperando_resultados']
+                        : $p['fecha_llegada']
+                    ) ?>"></span>
                 </td>
                 <td>
                     <form method="post" action="atender_paciente.php" class="d-inline">
@@ -77,7 +91,7 @@ $pacientes = $result->fetch_all(MYSQLI_ASSOC);
         <?php endforeach; ?>
         <tr class="table-info clickable-row" data-href="../general/reporte_estadicticas.php"
             title="Ver Reporte de Visitas">
-            <td colspan="7" style="text-align: center; font-weight: bold; cursor: pointer;">
+            <td colspan="8" style="text-align: center; font-weight: bold; cursor: pointer;">
                 Ver Reporte de Visitas 📊
             </td>
         </tr>
@@ -86,15 +100,15 @@ $pacientes = $result->fetch_all(MYSQLI_ASSOC);
 
 <script src="../js/actualizarTiempoEspera.js"></script>
 <script>
-document.addEventListener("DOMContentLoaded", function () {
-    const rows = document.querySelectorAll(".clickable-row");
-    rows.forEach(row => {
-        row.addEventListener("click", () => {
-            const href = row.getAttribute("data-href");
-            if (href) window.open(href, "_blank");
+    document.addEventListener("DOMContentLoaded", function () {
+        const rows = document.querySelectorAll(".clickable-row");
+        rows.forEach(row => {
+            row.addEventListener("click", () => {
+                const href = row.getAttribute("data-href");
+                if (href) window.open(href, "_blank");
+            });
         });
     });
-});
 </script>
 <br><br>
 
