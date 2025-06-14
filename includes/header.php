@@ -1,3 +1,7 @@
+<?php
+// Establezca la zona horaria del servidor en Ecuador (UTC-5)
+date_default_timezone_set('America/Guayaquil');
+?>
 <!DOCTYPE html>
 <html lang="es">
 <head>

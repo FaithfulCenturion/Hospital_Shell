@@ -9,15 +9,13 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST' || !isset($_POST['visita_id'])) {
 
 $visita_id = intval($_POST['visita_id']);
 
-$doctor_id = $_SESSION['usuario_id'];
 $update = $conn->prepare("
     UPDATE visitas 
-    SET estado = 'atendido', 
-        atendido_por = ?, 
+    SET estado = 'atendido',  
         fecha_entrada = NOW() 
     WHERE id = ?
 ");
-$update->bind_param('ii', $doctor_id, $visita_id);
+$update->bind_param('i', $visita_id);
 $update->execute();
 $update->close();
 
@@ -88,6 +86,16 @@ $age = $birthdate->diff($today)->y;
             </div>
         </div>
     </div>
+
+    <script>
+        document.querySelector('form').addEventListener('submit', function (e) {
+            const buttons = this.querySelectorAll('button[type="submit"]');
+            buttons.forEach(btn => {
+                btn.disabled = true;
+                btn.innerText = 'Procesando...'; 
+            });
+        });
+    </script>
 
 </body>
 
