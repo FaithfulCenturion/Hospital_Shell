@@ -150,16 +150,16 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     VALUES (?, ?, ?, ?, ?)");
                     $stmt2->bind_param("issis", $paciente_id, $notas, $estado, $doctor_id, $hora_de_cita);
                 }
-            }
-            if ($stmt2->execute()) {
-                //$mensaje = "✅ Paciente registrado correctamente: $nombre $apellido";
-                header("Location: dashboard.php"); // Redirigir al dashboard después de registrar
-                exit;
-            } else {
-                $mensaje = "⚠️ Error al registrar la visita: " . $conn->error;
-            }
-            $stmt2->close();
 
+                if ($stmt2->execute()) {
+                    //$mensaje = "✅ Paciente registrado correctamente: $nombre $apellido";
+                    header("Location: dashboard.php"); // Redirigir al dashboard después de registrar
+                    exit;
+                } else {
+                    $mensaje = "⚠️ Error al registrar la visita: " . $conn->error;
+                }
+                $stmt2->close();
+            }
         } else {
             $mensaje = "❌ Por favor complete todos los campos.";
         }
@@ -178,7 +178,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         <div class="alert alert-info"><?= htmlspecialchars($mensaje) ?></div>
     <?php endif; ?>
 
-    <form method="post" autocomplete="off" class="row g-3">
+    <form method="post" autocomplete="off" class="row g-3" novalidate>
         <?php if ($modoCambiarDoctor): ?>
             <h3>Cambiar doctor para paciente: <?= htmlspecialchars($visita['nombre'] . ' ' . $visita['apellido']) ?></h3>
 
@@ -255,13 +255,16 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             </div>
 
             <?php
-            $horaCitaPorDefecto = date('Y-m-d\TH:i', strtotime('+15 minutes'));
+            $zonaHoraria = new DateTimeZone('America/Guayaquil');
+            $ahora = new DateTime('now', $zonaHoraria);
+            $minCita = $ahora->format('Y-m-d\TH:i');
+            $horaCitaPorDefecto = $ahora->modify('+15 minutes')->format('Y-m-d\TH:i');
             ?>
 
             <div class="col-md-6">
                 <label for="hora_de_cita" class="form-label">Hora de la cita:</label>
                 <input type="datetime-local" id="hora_de_cita" name="hora_de_cita" class="form-control"
-                    value="<?= $horaCitaPorDefecto ?>" required>
+                    value="<?= $horaCitaPorDefecto ?>" min="<?= $minCita ?>" required>
             </div>
 
             <?php if ($campos_desactivado): ?>
@@ -279,8 +282,30 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
 <script>
     document.querySelector('form').addEventListener('submit', function (e) {
-        const buttons = this.querySelectorAll('button[type="submit"]');
-        buttons.forEach(btn => {
+        const doctorSelect = document.getElementById('doctor_id');
+        const horaCitaInput = document.getElementById('hora_de_cita');
+
+        // Asegúrese de que se seleccione un médico
+        if (!doctorSelect.value) {
+            alert('❌ Por favor seleccione un doctor.');
+            doctorSelect.focus();
+            e.preventDefault();
+            return;
+        }
+
+        // Asegúrese de que la cita sea en el futuro
+        const horaCita = new Date(horaCitaInput.value);
+        const ahora = new Date();
+
+        if (horaCita <= ahora) {
+            alert('❌ La hora de la cita debe ser en el futuro.');
+            horaCitaInput.focus();
+            e.preventDefault();
+            return;
+        }
+
+        // Deshabilitar los botones de envío
+        this.querySelectorAll('button[type="submit"]').forEach(btn => {
             btn.disabled = true;
             btn.innerText = 'Procesando...';
         });
