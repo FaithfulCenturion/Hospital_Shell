@@ -129,8 +129,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
             if (!$doctor_id || !is_numeric($doctor_id)) {
                 $mensaje = "❌ Por favor seleccione un doctor válido.";
+                return; //Detener el procesamiento
             } else if (!$hora_de_cita) {
                 $mensaje = "❌ Por favor ingrese la hora de la cita.";
+                return; //Detener el procesamiento
             } else {
                 // Convierta la cadena hora_de_cita en un objeto DateTime
                 $horaCitaDT = new DateTime($hora_de_cita);
@@ -184,7 +186,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
             <div class="col-md-6">
                 <label for="doctor_id" class="form-label">Doctor asignado:</label>
-                <select id="doctor_id" name="doctor_id" class="form-select" required>
+                <select id="doctor_id_cambiar" name="doctor_id" class="form-select" required>
                     <option value="">Seleccione un doctor...</option>
                     <?php foreach ($doctores as $doc): ?>
                         <option value="<?= $doc['id'] ?>" <?= $doc['id'] == $visita['atendido_por'] ? 'selected' : '' ?>>
@@ -239,7 +241,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
             <div class="col-md-6">
                 <label for="doctor_id" class="form-label">Asignar a Doctor:</label>
-                <select id="doctor_id" name="doctor_id" class="form-select" required>
+                <select id="doctor_id_nuevo" name="doctor_id" class="form-select" required>
                     <option value="">Seleccione un doctor...</option>
                     <?php foreach ($doctores as $doc): ?>
                         <option value="<?= $doc['id'] ?>">
@@ -282,7 +284,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
 <script>
     document.querySelector('form').addEventListener('submit', function (e) {
-        const doctorSelect = document.getElementById('doctor_id');
+        const doctorSelect = document.querySelector('select[name="doctor_id"]');
         const horaCitaInput = document.getElementById('hora_de_cita');
 
         // Asegúrese de que se seleccione un médico
