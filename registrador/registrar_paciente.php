@@ -145,6 +145,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     $stmt2 = $conn->prepare("
                     INSERT INTO visitas (paciente_id, fecha_llegada, notas, estado, atendido_por, hora_de_cita)
                     VALUES (?, NOW(), ?, ?, ?, ?)");
+                    var_dump($estado);
                     $stmt2->bind_param("issis", $paciente_id, $notas, $estado, $doctor_id, $hora_de_cita);
                 } else {
                     $stmt2 = $conn->prepare("
