@@ -136,8 +136,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             } else {
                 // Convierta la cadena hora_de_cita en un objeto DateTime
                 $horaCitaDT = new DateTime($hora_de_cita);
-                $hoy = new DateTime('today', new DateTimeZone('America/Guayaquil'));
+                $hora_de_cita_mysql = $horaCitaDT->format('Y-m-d H:i:s');
 
+                $hoy = new DateTime('today', new DateTimeZone('America/Guayaquil'));
                 // Comprueba si la cita es hoy
                 $esHoy = $horaCitaDT->format('Y-m-d') === $hoy->format('Y-m-d');
 
@@ -145,14 +146,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     $stmt2 = $conn->prepare("
                     INSERT INTO visitas (paciente_id, fecha_llegada, notas, estado, atendido_por, hora_de_cita)
                     VALUES (?, NOW(), ?, ?, ?, ?)");
-                    var_dump($estado);
-                    $stmt2->bind_param("issis", $paciente_id, $notas, $estado, $doctor_id, $hora_de_cita);
                 } else {
                     $stmt2 = $conn->prepare("
                     INSERT INTO visitas (paciente_id, notas, estado, atendido_por, hora_de_cita)
                     VALUES (?, ?, ?, ?, ?)");
-                    $stmt2->bind_param("issis", $paciente_id, $notas, $estado, $doctor_id, $hora_de_cita);
                 }
+
+                $stmt2->bind_param("issis", $paciente_id, $notas, $estado, $doctor_id, $hora_de_cita_mysql);
 
                 if ($stmt2->execute()) {
                     //$mensaje = "✅ Paciente registrado correctamente: $nombre $apellido";

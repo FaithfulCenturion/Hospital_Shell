@@ -13,14 +13,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['marcar_llegada'])) {
     // Confirmar que la visita existe, está esperando y fecha_llegada es NULL o vacío
     $stmt = $conn->prepare("
         SELECT id FROM visitas
-        WHERE id = ? AND estado = 'esperando' AND (fecha_llegada IS NULL OR fecha_llegada = '')
+        WHERE id = ? AND estado = 'esperando' AND fecha_llegada IS NULL
     ");
     $stmt->bind_param('i', $visita_id);
     $stmt->execute();
     $result = $stmt->get_result();
 
     if ($result->num_rows === 1) {
-        // Actualizar fecha_llegada a NOW() y estado a 'en progreso'
+        // Actualizar fecha_llegada a NOW()
         $update = $conn->prepare("UPDATE visitas SET fecha_llegada = NOW() WHERE id = ?");
         $update->bind_param('i', $visita_id);
         if ($update->execute()) {
@@ -53,6 +53,7 @@ $sql = "
     JOIN pacientes p ON v.paciente_id = p.id
     JOIN usuarios u ON v.atendido_por = u.id
     WHERE v.estado IN ('esperando', 'en laboratorio')
+        AND DATE(v.hora_de_cita) = CURDATE()
     ORDER BY 
         u.nombre_usuario,
         v.fecha_llegada ASC
@@ -156,15 +157,16 @@ $result = $conn->query($sql);
                                     <input type="hidden" name="visita_id" value="<?= (int) $fila['visita_id'] ?>">
                                     <button type="submit" class="btn btn-warning btn-sm">Listo para Resultados</button>
                                 </form>
-                             <?php elseif ($fila['estado'] === 'esperando' && empty($fila['fecha_llegada'])): ?>
-                                <form method="POST" action="" 
-                                      onsubmit="return confirm('¿Marcar llegada del paciente?');" class="d-inline">
+                            <?php elseif ($fila['estado'] === 'esperando' && empty($fila['fecha_llegada'])): ?>
+                                <form method="POST" action="" onsubmit="return confirm('¿Marcar llegada del paciente?');"
+                                    class="d-inline">
                                     <input type="hidden" name="visita_id" value="<?= (int) $fila['visita_id'] ?>">
-                                    <button type="submit" name="marcar_llegada" class="btn btn-outline-success btn-sm">Marcar llegada</button>
+                                    <button type="submit" name="marcar_llegada" class="btn btn-outline-success btn-sm">Marcar
+                                        llegada</button>
                                 </form>
                             <?php else: ?>
                                 <a href="registrar_paciente.php?visita_id=<?= (int) $fila['visita_id'] ?>&modo=cambiar_doctor"
-                                class="btn btn-info btn-sm me-2">Cambiar Doctor</a>
+                                    class="btn btn-info btn-sm me-2">Cambiar Doctor</a>
                                 |
                                 <form method="POST" action="../general/cancelar_visita.php"
                                     onsubmit="return confirm('¿Está seguro que desea cancelar esta visita?');" class="d-inline">
